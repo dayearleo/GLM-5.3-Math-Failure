@@ -2,18 +2,19 @@
 
 ## 当前状态
 
-基础治理骨架、题解、数学 Session 报告和两份 GLM reasoning 转录已由 commit `3904d16761c5ee914a7638b61582aa46cbef7723` 推送到 `origin/main`。当前工作新增了转录来源/规则审计报告和 Flash 首次审计备注的可见原件副本，尚未提交。两份 transcript 副本与用户提供文件逐字节相同，所有纳入字段均按 request ID 与本地 raw JSONL 比对字符数和 SHA-256；Flash 文件四段中只有第 1 段来自原数学解题 turn。
+基础治理骨架、题解、数学 Session 报告、两份 GLM reasoning 转录、转录来源/规则审计报告和 Flash 首次审计备注的可见原件副本，已由 `3904d16761c5ee914a7638b61582aa46cbef7723` 与 `c9a4ad2980db2dad2acca5539c4504e66d3ba371` 两个提交推送到 `origin/main`。两份 transcript 副本与用户提供文件逐字节相同；所有纳入字段在各自源可读时均按 request ID 比对字符数和 SHA-256；Flash 四段中只有第 1 段来自原数学解题 turn。
 
 ## 当前执行队列
 
 | 方向 | 状态 | 下一步 | 相关 Feature |
 |---|---|---|---|
-| 转录来源审计 | `ACTIVE_WORK` | 完成 README/Feature/报告状态更新，核对差异与 raw 发布边界，再按授权提交并推送 | INTEGRITY-001 / RAW-001 |
+| 转录来源/规则审计 | `COMPLETE_FOR_PUBLISHED_SCOPE` | 报告和 README 已推送；RAW-001 仍部分实现，Flash 原始 JSONL 当前缺失，GLM-5.3 完整 JSONL 含未分类 Cookie，暂不可公开 | INTEGRITY-001 / RAW-001 |
 
 ## 当前开放问题与阻塞
 
 - 两个 ZCode raw 快照曾在本机 JSONL 中审计；分别包含 31 和 11 个非空 `Set-Cookie` 响应头值，且读取时原文件 mode 为 `0644`。完整 JSONL 未复制或推送；项目 AGENTS 禁止 Secret 入 Git，Cookie 值安全性未获确认。Flash 文件后来从 canonical catalog 消失，在可访问搜索范围内未找到，原因未知；RAW-001 仍部分实现，路径、大小、哈希与查找边界见新审计报告。
 - 新审计判断：GLM-5.3 首次就从 raw JSONL 脚本抽取；Flash 首次只按当前上下文写“不可导出”备注，没读 raw，后续按明确脚本提示成功提取。六个 transcript 字段与源完全匹配；证据支持有限的证据范围失误，不证明故意欺骗。
+- Flash `sess_ef61...` JSONL 在读取并完成字段比对后从 canonical catalog 消失；全盘文件名搜索受系统目录权限/ignore 限制，没有找到可恢复副本。最后已核快照 SHA-256 和时间见审计报告，消失原因 `UNKNOWN`。
 - Codex rollout 的 reasoning 项为 encrypted/summary；6:37.023 是最后一个 opaque reasoning marker，不能证明它就是首次发现错误的语义时刻。
 - ZCode usage 提供总 `outputTokens`，没有单独 thinking-token 计数。
 
