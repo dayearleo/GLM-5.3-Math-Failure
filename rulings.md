@@ -19,3 +19,9 @@
 ## R-004 · 2026-10-01 · 纳入 GLM-5.3-Flash 可读推理转录
 
 用户提供 `/Volumes/D/math/GLM-5.3-Flash-Thinking-verbatim.md`，并在当前任务上下文中要求将 Flash thinking trajectory 纳入目标 repo。该文件已逐字节复制；四个 reasoning 字段均按 request ID 与本地源 JSONL 比对，字符数和 SHA-256 全部匹配。第 1 段属于原数学解题 turn；第 2–4 段来自后续审计 turn，不得计入原题 Session 的耗时/Token 或作为其作答内容。
+
+## R-005 · 2026-10-01 · 审计 thinking 提取流程与规则遵守
+
+用户澄清：GLM-5.3 的 transcript 按其理解是从自身上下文整理；Flash 使用 GLM-5.3 生成的明确 raw-source 提示词，并要求分析是否存在自我补写、事实转录或诚信问题。审计必须以两个最新 Session JSONL 为权威，分开判定来源流程、字段正文准确性、上下文可见性和主观意图。用户要求将最新两个 JSONL 快照放入目标 repo；原件含非空 `Set-Cookie` 响应头值，项目 AGENTS 禁止 Secret 入 Git，因此公开仓库只加入经校验的 transcript/可见备注/审计报告，不提交完整 JSONL；报告记录本机源路径与 SHA-256。
+
+审计期间 Flash JSONL 从 ZCode canonical catalog 消失，且在 `~/.zcode` canonical rollout 子树中未找到同名文件；较广 `rg --files --hidden` 搜索没有打印匹配项，但受 macOS 系统目录权限限制、遵守 ignore 规则并以 exit 2 结束，不能视为全盘穷举。消失或归档原因保持 `UNKNOWN`。既有 Flash transcript 的四段源哈希匹配是文件尚可读时的观测；当前不能重新打开原始 JSONL 复算。

@@ -12,8 +12,9 @@
 
 | ID | 类型 | 当前要求 | 来源 | 裁定 | 交付 | 认知锚点 |
 |---|---|---|---|---|---|---|
-| CASE-001 | 数学个案 | 自包含说明矩条件题的最优常数、原始错误指数反例和更正指数证明；比较 Codex `gpt-6-luna` 与两个指定 ZCode GLM Session 的可见输出、时长和 Host usage；不得从单题外推一般排名 | 用户要求，2026-10-01 | 已采纳 | 部分实现；本地报告、题解和两份 reasoning 转录已写，待提交/推送 | SRC:本轮用户请求；DES:`标准答案与排错记录.md`；IMP:`README.md`、两份报告、两份转录；VER:解析推导、转录哈希及 usage metadata；EVD:README 与报告，完整 raw source 仍未收录 |
-| RAW-001 | 公开数据 | 将 Codex 与两个 ZCode Session 的三份完整 raw trajectory 放入公开仓库 | 用户明确要求，2026-10-01 | 已采纳 | 部分实现；纳入 GLM-5.3 两段、GLM-5.3-Flash 四段 `reasoningText` 的逐字转录，不含三份完整 JSONL/rollout | SRC:用户要求及后续授权复制两份用户提供的转录文件；DES:完整轨迹与字段摘录须区分；IMP:`GLM-5.3-Thinking.md`、`GLM-5.3-Flash-Thinking-verbatim.md`；VER:副本字节一致，所有字段按 request ID 与源 JSONL 对照字符数和 SHA-256 通过；EVD:尚非三份完整 raw trajectory |
+| CASE-001 | 数学个案 | 自包含说明矩条件题的最优常数、原始错误指数反例和更正指数证明；比较 Codex `gpt-6-luna` 与两个指定 ZCode GLM Session 的可见输出、时长和 Host usage；不得从单题外推一般排名 | 用户要求，2026-10-01 | 已采纳 | 部分实现；数学材料及两份逐字 transcript 已随 `3904d167` 推送，新增来源审计待提交 | SRC:用户请求；DES:`标准答案与排错记录.md`；IMP:`README.md`、两份 Session 报告、两份转录；VER:解析推导、转录哈希及 usage metadata；EVD:README 与报告，完整 raw source 仍未收录 |
+| RAW-001 | 公开数据 | 将 Codex 与两个 ZCode Session 的三份完整 raw trajectory 放入公开仓库 | 用户明确要求，2026-10-01 | 已采纳 | 部分实现；纳入 GLM-5.3 两段、GLM-5.3-Flash 四段 `reasoningText` 的逐字转录；三份完整 JSONL/rollout 未公开；Flash JSONL 当前在 canonical catalog 中缺失 | SRC:用户明确要求；DES:完整轨迹与字段摘录须区分；IMP:两份 transcript；VER:所有纳入字段在源可读时按 request ID 与 JSONL 对照字符数和 SHA-256 通过；EVD:两个 ZCode 原文件的本机路径、大小、hash、查找状态在 `推理转录来源与规则遵守审计.md` |
+| INTEGRITY-001 | AI 行为审计 | 比较 GLM-5.3 与 Flash 的 reasoning 转录来源、逐字真实性、提示执行和对“缺少上下文/缺少源记录”的结论边界；如实判定是否有诚信问题 | 用户要求，2026-10-01 | 已采纳 | 报告和首次 Flash 可见审计备注原件副本已写，待提交/推送；暂判为 Flash 首次证据范围失误，未证明故意欺骗 | SRC:本轮用户澄清；DES:轨迹证据分层；IMP:`推理转录来源与规则遵守审计.md`、`GLM-5.3-Flash-Initial-Audit-Note.md`、README 与两份报告；VER:session_trajectory tree/scan、raw locators、逐字段哈希比较；EVD:报告分列内容真实性、方法差异、错误范围与未知意图 |
 
 ## 锚点合同
 

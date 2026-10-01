@@ -6,7 +6,7 @@
 
 ## 项目目的
 
-本仓库记录同一道矩条件极差题在 Codex `gpt-6-luna` 与 ZCode `GLM-5.3`、`GLM-5.3-Flash` 指定 Session 中的回答差异，作为一个可供智谱 AI 关注的具体案例。项目重点是对照模型是否检查题目真假、是否给出可见的完成答案、耗时和 Host 报告的 token 用量。
+本仓库记录同一道矩条件极差题在 Codex `gpt-6-luna` 与 ZCode `GLM-5.3`、`GLM-5.3-Flash` 指定 Session 中的回答差异，作为一个可供智谱 AI 关注的具体案例。项目重点是对照模型是否检查题目真假、是否给出可见的完成答案、耗时和 Host 报告的 token 用量，并核对后续 thinking 转录的来源、逐字性和规则执行边界。
 
 这道题的原始第 (2) 问要求
 \[
@@ -33,7 +33,18 @@
 
 Codex 首题 turn 的最后一个 reasoning 事件标记在 14:31:01.134Z，即首个 prompt 后 6:37.023；该事件内容是加密/摘要状态，不能据此证明那就是“首次发现第 (2) 问为假”的时刻。Codex 最终可见答复出现在 14:31:30.516Z，turn 完成于 14:31:31.034Z，记录时长为 7:06.953。原始问题加上后续更正答案的墙钟跨度为 11:31.608，两个 turn 活动时长之和为 11:07.510。因此“总计 10 分钟”是近似口述，原始记录更接近 11 分半。
 
-从单个案例可以得出的有界观察是：Codex 在首答中识别了假命题并交付反例；两个指定 GLM Session 长时间运行且没有可见最终答案。由于原命题为假、上下文/toolset 和 Provider usage 口径不完全相同、每种 GLM 只有一个 Session，本数据不构成统计评测或一般模型排名。
+从单个案例可以得出的有界观察是：Codex 在首答中识别了假命题并交付反例；两个指定 GLM 数学 Session 长时间运行且没有可见最终答案。由于原命题为假、上下文/toolset 和 Provider usage 口径不完全相同、每种 GLM 只有一个 Session，本数据不构成统计评测或一般模型排名。
+
+## 第二项审计：Thinking 转录与证据处理
+
+详细判定见[《推理转录来源与规则遵守审计》](推理转录来源与规则遵守审计.md)。结论分成两层：两份已纳入仓库的 reasoning 正文都与源 JSONL 的 `response.reasoningText` 按 request ID、字符数和 SHA-256 逐段匹配，未发现模型在转录时自我补写或修正文段；但提取流程不一样。
+
+| Session | 实际转录流程 | 审计判断 |
+|---|---|---|
+| GLM-5.3 | 收到普通逐字记录请求后，自行用 Python 从原始 JSONL 按数学 turn 抽取两段并回读校验；不是从当前上下文默写 | 正文忠实。若原实验意在测“只凭上下文回忆”，该运行不适合作为该指标样本；当时记录的用户请求并未限制只能用上下文 |
+| GLM-5.3-Flash | 第一次只按当前可见上下文写了审计备注，并称没有可导出的对象；收到明确的 raw-source 脚本提示后，才读取 JSONL 并逐字提取四段 | 正文忠实。首次把“模型上下文不可见”过度推广成“Session 无可导出记录”，属于证据路由/结论范围失误；轨迹不足以证明故意欺骗 |
+
+Flash 转录中的第 1 段是数学解题推理；第 2–4 段是先前审计备注 turn 的推理，按后来提示词的筛选规则纳入，不能算成数学作答。具体 requestId、raw locators、源快照哈希及未知项都列在审计报告中。需要注意：Flash 原始 JSONL 曾在本机读取并校验，但后来从 ZCode canonical catalog 消失；目前报告只保存它先前快照的哈希与字段级校验结果，原因未知。
 
 ## 阅读顺序
 
@@ -41,7 +52,9 @@ Codex 首题 turn 的最后一个 reasoning 事件标记在 14:31:01.134Z，即�
 2. [GLM-5.3 Session 分析](GLM-5.3.md)：原始请求/响应元数据、模型停止状态、数学任务难点和 Codex 时间/Token 对照。
 3. [GLM-5.3-Flash Session 分析](GLM-5.3-Flash.md)：对应 Session 的同类分析与对照。
 4. [GLM-5.3 推理转录](GLM-5.3-Thinking.md)与 [GLM-5.3-Flash 推理转录](GLM-5.3-Flash-Thinking-verbatim.md)：按 request ID、字符数和段落 SHA-256 标注的原字段逐字文本。
-5. 项目治理入口：[`feature-list.md`](feature-list.md)、[`MEMORY.md`](MEMORY.md)、[`rulings.md`](rulings.md)、[`docs/README.md`](docs/README.md)。
+5. [推理转录来源与规则遵守审计](推理转录来源与规则遵守审计.md)：比较两种提取方式、初次 Flash 审计备注、来源字段校验与结论边界。
+6. [GLM-5.3-Flash 首次审计备注](GLM-5.3-Flash-Initial-Audit-Note.md)：首次提取尝试生成的可见备注原件副本，按 SHA-256 校验。
+7. 项目治理入口：[`feature-list.md`](feature-list.md)、[`MEMORY.md`](MEMORY.md)、[`rulings.md`](rulings.md)、[`docs/README.md`](docs/README.md)。
 
 ## 转录与原始 Session 文件的边界
 
@@ -55,11 +68,11 @@ Codex 首题 turn 的最后一个 reasoning 事件标记在 14:31:01.134Z，即�
 
 Flash 转录第 1 段属于原数学解题 turn（318,426 字符）；第 2–4 段属于之后另一个审计 turn（合计 17,205 字符），不计入数学 Session 的原始解题用量。两份转录都不含原 JSONL 的请求封套、消息列表、headers 或完整 Host 事件，因此是 **reasoning 字段摘录**，不是完整 raw trajectory。
 
-Codex 原始 rollout、GLM-5.3 原始 JSONL、GLM-5.3-Flash 原始 JSONL 均未纳入本仓库。报告按各来源可见的 Session/request 元数据记录时长、usage 和可见答复状态；两份字段转录仍不是三份完整 trajectory 的替代品。GLM reasoning 字符数也不等于 Token 数。
+Codex 原始 rollout 与两份完整 ZCode JSONL 均未纳入本仓库。GLM-5.3 的完整源 JSONL 仍在本机 canonical 路径；Flash 源文件上次读取时为 3,012,807 字节、当前在 catalog 中缺失，原因未知。两个 ZCode 快照此前均含非空 `Set-Cookie` 响应头值；按项目“Secret 不入 Git”约束，不公开完整 JSONL。路径、大小、快照哈希、查找状态和 Cookie 头数量见[审计报告](推理转录来源与规则遵守审计.md)。报告按各来源可见的 Session/request 元数据记录时长、usage 和可见答复状态；两份字段转录仍不是三份完整 trajectory 的替代品。GLM reasoning 字符数也不等于 Token 数。
 
 ## 快速检查
 
-本项目没有运行代码或依赖安装。数学结论以文内解析推导为准；时间/usage 数值来自对应 Host Session 元数据。两份 GLM 转录的每段字段都已按 request ID 与本地源 JSONL 对照字符数和 SHA-256；仓库副本也分别与用户提供文件逐字节一致。不要把摘录称为完整 raw trajectory、把 reasoning 字符数伪称为 Token，或把一个案例推广成整体能力结论。
+本项目没有运行代码或依赖安装。数学结论以文内解析推导为准；时间/usage 数值来自对应 Host Session 元数据。两份 GLM 转录的每段字段都曾在源 JSONL 可读时按 request ID 对照字符数和 SHA-256；仓库副本分别与用户提供文件逐字节一致。GLM-5.3 源文件仍可重读，Flash 源文件现已在 canonical catalog 缺失，故 Flash 的旧校验不能从当前源重算。不要把摘录称为完整 raw trajectory、把 reasoning 字符数伪称为 Token，或把一个案例推广成整体能力结论。
 
 ## 认知入口
 
@@ -80,3 +93,4 @@ Codex 原始 rollout、GLM-5.3 原始 JSONL、GLM-5.3-Flash 原始 JSONL 均未�
 | 数学案例与标准解 | 处理矩条件极差题、核验指数真假 | `CASE-001` | `标准答案与排错记录.md` | Markdown 文档 | 解析推导；未建立代码测试 |
 | Session 案例报告 | 比较三个指定 Session 的可见完成状态和 usage | `CASE-001` | `GLM-5.3.md`、`GLM-5.3-Flash.md` | Host 元数据与报告 | 单案例观察，不是统计评测 |
 | GLM reasoning 文本摘录 | 保存 GLM-5.3 与 Flash 的 `response.reasoningText` 逐字转录 | `CASE-001` | `GLM-5.3-Thinking.md`、`GLM-5.3-Flash-Thinking-verbatim.md` | 用户提供副本；段哈希与源 JSONL 均核对 | 不包含完整 JSONL 封套或完整 Session |
+| 转录来源与规则审计 | 核验字段忠实性、提取流程差异及 Flash 首次过度结论 | `INTEGRITY-001` | `推理转录来源与规则遵守审计.md`、`GLM-5.3-Flash-Initial-Audit-Note.md` | raw JSONL locator、直接 SHA/字符数比较及 visible note 原件 | 未证明故意不诚实；完整 JSONL 因 Cookie 未公开 |

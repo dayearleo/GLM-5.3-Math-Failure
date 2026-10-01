@@ -28,6 +28,8 @@
 | `../标准答案与排错记录.md` | 矩条件变换、(C=\sqrt5)、原 (n^{-1/3}) 反例、修正 (n^{-3/2}) 下界 | 解析证明 |
 | `../GLM-5.3.md` | GLM-5.3 指定 Session 分析 | metadata、可见答复状态及单独 reasoning 转录链接；完整 raw trajectory 未收录 |
 | `../GLM-5.3-Flash.md` | GLM-5.3-Flash 指定 Session 分析 | metadata、可见答复状态及 reasoning 转录边界；完整 raw trajectory 未收录 |
-| `../GLM-5.3-Thinking.md` | 两段 GLM-5.3 `response.reasoningText` 的逐字转录 | request ID、字符数与 SHA-256 均对照源 JSONL；不是完整 JSONL |
-| `../GLM-5.3-Flash-Thinking-verbatim.md` | 四段 GLM-5.3-Flash `response.reasoningText` 的逐字转录 | request ID、字符数与 SHA-256 均对照源 JSONL；首段属数学 turn，后三段属审计 turn；不是完整 JSONL |
+| `../GLM-5.3-Thinking.md` | 两段 GLM-5.3 `response.reasoningText` 的逐字转录 | 已按 request ID、字符数与 SHA-256 对照源 JSONL；不是完整 JSONL |
+| `../GLM-5.3-Flash-Thinking-verbatim.md` | 四段 GLM-5.3-Flash `response.reasoningText` 的逐字转录 | 源文件可读时已逐段对照；首段属数学 turn，后三段属审计 turn；原 JSONL 当前在 catalog 缺失 |
+| `../推理转录来源与规则遵守审计.md` | 比较两种提取动作，审查 Flash 首次审计备注与证据范围 | 字段正文均匹配；Flash 首次“不可导出”过度外推；未证明故意欺骗 |
+| `../GLM-5.3-Flash-Initial-Audit-Note.md` | Flash 第一次审计回应写出的可见备注原件副本 | 与 raw Write tool-call 内容逐字节一致；非 reasoning transcript |
 | `../README.md` | Codex/ZCode 时间和 token 多维对照 | 单案例观察，不是统计评测 |
